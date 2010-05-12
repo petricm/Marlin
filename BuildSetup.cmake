@@ -107,7 +107,7 @@ SET( RAIDA_HOME "${ILC_HOME}/RAIDA/v01-03"
 # Project options
 #############################################################################
 
-#SET( INSTALL_DOC OFF CACHE BOOL "Set to OFF to skip build/install Documentation" FORCE )
+SET( INSTALL_DOC OFF CACHE BOOL "Set to OFF to skip build/install Documentation" FORCE )
 
 # set cmake build type, default value is: RelWithDebInfo
 # possible options are: None Debug Release RelWithDebInfo MinSizeRel
