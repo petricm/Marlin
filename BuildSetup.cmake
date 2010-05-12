@@ -20,7 +20,7 @@
 #############################################################################
 
 # ILC_HOME
-SET( ILC_HOME "/afs/desy.de/group/it/ilcsoft/v01-03"
+SET( ILC_HOME "/afs/desy.de/group/it/ilcsoft/v01-08-01"
     CACHE PATH "Path to ILC Software" FORCE )
 
 # Path to LCIO
