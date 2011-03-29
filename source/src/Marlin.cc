@@ -74,6 +74,44 @@ int main(int argc, char** argv ){
     binname = binname.substr( binname.find_last_of("/") + 1 , binname.size() ) ;
     streamlog::out.init( std::cout , binname ) ;
 
+    if( argc > 1 ){
+        if( std::string(argv[1]) == "-x" ){
+            std::cout  << "<?xml version=\"1.0\" encoding=\"us-ascii\"?>" << std::endl
+                << "<!-- ?xml-stylesheet type=\"text/xsl\" href=\"http://ilcsoft.desy.de/marlin/marlin.xsl\"? -->" << std::endl
+                << "<!-- ?xml-stylesheet type=\"text/xsl\" href=\"marlin.xsl\"? -->" << std::endl << std::endl;
+        }
+    }
+
+    //#ifndef MARLIN_NO_DLL
+
+    //------ load shared libraries with processors ------
+
+    StringVec libs ;
+    LCTokenizer t( libs, ':' ) ;
+
+    std::string marlinProcs("") ;
+
+    char * var =  getenv("MARLIN_DLL" ) ;
+
+    if( var != 0 ) {
+        marlinProcs = var ;
+    } else {
+        std::cout << std::endl << "<!-- You have no MARLIN_DLL variable in your environment "
+            " - so no processors will be loaded. ! --> " << std::endl << std::endl ;
+    }
+
+    std::for_each( marlinProcs.begin(), marlinProcs.end(), t ) ;
+
+    ProcessorLoader loader( libs.begin() , libs.end()  ) ;
+    if( loader.failedLoading() ){
+        return(1);
+    }
+
+    //------- end processor libs -------------------------
+
+    //#endif
+
+
     const char* steeringFileName = "none"  ;
 
     //map<string, map<string,string> > cmdlineparams; 
@@ -108,15 +146,7 @@ int main(int argc, char** argv ){
 
             for_each( s.begin(), s.end(), t2 ) ;
 
-            if( cmdlinekey.size() == 1 ){
-                //cout << "MARLIN_DLL option detected" << endl ;
-                if( cmdlinekey[0].compare("MARLIN_DLL") != 0 ){
-                    cerr << endl << "*** invalid command line option: " << argv[i] << endl << endl;
-                    return printUsage();
-                }
-                cmdlinekey.push_back( "" ) ; // index2 needs to be set to ""
-            }
-            if( cmdlinekey.size() > 2 ){
+            if( cmdlinekey.size() != 2 ){
                 cerr << endl << "*** invalid command line option: " << argv[i] << endl << endl;
                 return printUsage();
             }
@@ -141,44 +171,7 @@ int main(int argc, char** argv ){
 
     // read file name from command line
     if( argc > 1 ){
-        if( std::string(argv[1]) == "-x" ){
-            std::cout  << "<?xml version=\"1.0\" encoding=\"us-ascii\"?>" << std::endl
-                << "<!-- ?xml-stylesheet type=\"text/xsl\" href=\"http://ilcsoft.desy.de/marlin/marlin.xsl\"? -->" << std::endl
-                << "<!-- ?xml-stylesheet type=\"text/xsl\" href=\"marlin.xsl\"? -->" << std::endl << std::endl;
-        }
-    }
 
-    //------ load shared libraries with processors ------
-
-    StringVec libs ;
-    LCTokenizer t( libs, ':' ) ;
-
-    std::string marlinProcs("") ;
-
-    const char * var =  getenv("MARLIN_DLL" ) ;
-
-    if( cmdlineparams["MARLIN_DLL"][""].compare( "" ) != 0 ){
-        cout << "<!-- using MARLIN_DLL defined on the command line: " << cmdlineparams[ "MARLIN_DLL" ][ "" ] << " -->" << endl << endl;
-        var = cmdlineparams[ "MARLIN_DLL" ][ "" ].c_str() ;
-    }
-
-    if( var != 0 ) {
-        marlinProcs = var ;
-    } else {
-        std::cout << std::endl << "<!-- MARLIN_DLL not set - no processors will be loaded. ! --> " << std::endl << std::endl ;
-    }
-
-    std::for_each( marlinProcs.begin(), marlinProcs.end(), t ) ;
-
-    ProcessorLoader loader( libs.begin() , libs.end()  ) ;
-    if( loader.failedLoading() ){
-        return(1);
-    }
-
-    //------- end processor libs -------------------------
-
-
-    if( argc > 1 ){
         if( std::string(argv[1]) == "-l" ){
             listAvailableProcessors() ;
             return(0) ;
@@ -547,7 +540,6 @@ int printUsage() {
         << "   Marlin -o old.steer new.xml\t convert old steering file to xml steering file" << std::endl 
         << "   Marlin -l                  \t [deprecated: old format steering file example]" << std::endl 
         << "   Marlin -d steer.xml flow.dot\t create a program flow diagram (see: http://www.graphviz.org)" << std::endl 
-        << "   Marlin --MARLIN_DLL=[colon separated list of plugins to load into Marlin]" << std::endl 
         << std::endl 
         << " Example: " << std::endl 
         << " To create a new default steering file from any Marlin application, run" << std::endl 
