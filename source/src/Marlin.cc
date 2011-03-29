@@ -546,7 +546,11 @@ int printUsage() {
         << "     Marlin -x > mysteer.xml" << std::endl 
         << " and then use either an editor or the MarlinGUI to modify the created steering file " << std::endl 
         << " to configure your application and then run it. e.g. : " << std::endl 
-        << "     Marlin mysteer.xml > marlin.out 2>&1 &" << std::endl
+        << "     Marlin mysteer.xml > marlin.out 2>&1 &" << std::endl << std::endl
+        << " Dynamic command line options may be specified in order to overwrite individual steering file parameters, e.g.:" << std::endl 
+        << "     Marlin --global.LCIOInputFiles=\"input1.slcio input2.slcio\" --global.GearXMLFile=mydetector.xml" << std::endl 
+        << "            --MyLCIOOutputProcessor.LCIOWriteMode=WRITE_APPEND --MyLCIOOutputProcessor.LCIOOutputFile=out.slcio steer.xml" << std::endl << std::endl
+        << "     NOTE: Dynamic options do NOT work with any of the other Marlin options (-x, -c, -f, -o, -l, -d) nor with the MarlinGUI nor with old steering files" << std::endl 
         << std::endl ;
 
     return(0) ;
