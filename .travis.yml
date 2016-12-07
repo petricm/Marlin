@@ -23,7 +23,7 @@ install:
 
 # command to run tests
 script:
-  - docker run -t -v $PKGDIR:/Package cernvm /init /Package/.travis-ci.d/compile_and_test_${COMPILER}.sh
+  - docker run -t -v $PKGDIR:/Package -e COMPILER=$COMPILER cernvm /init /Package/.travis-ci.d/compile_and_test.sh
 
 # Don't send e-mail notifications
 notifications:
