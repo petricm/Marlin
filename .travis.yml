@@ -4,6 +4,8 @@ dist: trusty
 services:
   - docker
 
+language: cpp
+
 env:
   matrix:
     - COMPILER=gcc
